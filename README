@@ -1,0 +1,6 @@
+Digital watermarking. Hiding text in BMP images.
+
+Compile:
+	make
+Test:
+	make test
