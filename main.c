@@ -2,13 +2,11 @@
  * @author David Durman, 2009
  * @file main.c
  */ 
-#define _GNU_SOURCE
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
 #include "bmphide.h"
-
 
 int main(int argc, char **argv)
 {
@@ -57,7 +55,7 @@ int main(int argc, char **argv)
   }
 
   if (hFlag == 1){
-    printf("USAGE: bmphide -h | [-i input_file] [-o output_file] [-l log_file] [-t text] \n");
+    printf("USAGE: bmphide -h | [-i input_file] [-o output_file] [-l log_file] [-s secret_file] \n");
     return BMPHIDEOk;
   }
 
@@ -96,10 +94,12 @@ int main(int argc, char **argv)
   }
 
   size_t len = 0;
-  ssize_t read;
-  char* line = NULL;
   if (tfile != NULL){
-    getline(&txt, &len, textFile);
+    fseek(textFile, 0, SEEK_END);
+    len = ftell(textFile);
+    fseek(textFile, 0, SEEK_SET);
+    txt = (char *) malloc(len);
+    len = fread(txt, len, 1, textFile);
   }
 
   if (txt != NULL)
@@ -112,7 +112,7 @@ int main(int argc, char **argv)
   if (outputFile != NULL) fclose(outputFile);
   if (textFile != NULL) fclose(textFile);
 
-  if (len != 0)
+  if (txt)
     free(txt);
 
   exit(0);
